@@ -1,9 +1,11 @@
 package com.mayab.quality.loginunittest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,35 +39,15 @@ public class UserServiceTest {
         userAlreadyRegistered = new User("email1@email.com", "user1", "password1");
         userAlreadyRegistered.setId(1);
         dataBase.add(userAlreadyRegistered);
-
-        when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
-            public User answer(InvocationOnMock invocation) throws Throwable {
-                for (User userIn : dataBase) {
-                    if (userIn.getEmail().equals(invocation.getArguments()[0])) {
-                        System.out.println("Tienen el mismo email");
-                        return userIn;
-                    }
-                }
-                return null;
-            }
-        });
-        when(daoUserMock.registerUser(any(User.class))).thenAnswer(new Answer<User>() {
-            public User answer(InvocationOnMock invocation) throws Throwable {
-                User user = (User) invocation.getArguments()[0];
-                user.setId(dataBase.size() + 1);
-                dataBase.add(user);
-                return user;
-            }
-        });
-
     }
 
     @Test
     public void testLogIn() {
+
         when(userMock.getUsername()).thenReturn("user");
         when(userMock.getPassword()).thenReturn("password");
 
-        when(daoUserMock.findUserByUsername(anyString())).thenAnswer(new Answer<User>() {
+        when(daoUserMock.findByUserName(anyString())).thenAnswer(new Answer<User>() {
             public User answer(InvocationOnMock invocation) throws Throwable {
                 return userMock.getUsername().equals(invocation.getArguments()[0]) ? userMock : null;
             }
@@ -102,6 +84,7 @@ public class UserServiceTest {
 
     @Test
     public void whenPasswordShort() {
+
         User userCreated = userService.createUser("newuser@email.com", "newUser", "123456");
         if (userCreated == null) {
             System.out.println("Se quedó corto de longitud de password");
@@ -113,14 +96,134 @@ public class UserServiceTest {
 
     @Test
     public void whenUserAlreadyExist() {
+
+        when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
+
+                for (User userIn : dataBase) {
+                    if (userIn.getEmail().equals(invocation.getArguments()[0])) {
+                        System.out.println("Tienen el mismo email");
+                        return userIn;
+                    }
+                }
+
+                return null;
+            }
+        });
+
+        when(daoUserMock.save(any(User.class))).thenAnswer(new Answer<Integer>() {
+            public Integer answer(InvocationOnMock invocation) throws Throwable {
+                User user = (User) invocation.getArguments()[0];
+                dataBase.add(user);
+                return dataBase.size();
+            }
+        });
+
         // Need to use an email already in use
         User userCreated = userService.createUser("email1@email.com", "newUser", "12345678");
         if (userCreated == null) {
             System.out.println("Ya existe el usuario con ese email");
 
         }
+
         assertNull(userCreated);
 
+    }
+
+    @Test
+    public void findUserById() {
+        when(daoUserMock.findById(anyInt())).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
+                Integer userId = (int) invocation.getArguments()[0];
+                for (User user : dataBase) {
+                    if (user.getId() == userId) {
+                        return user;
+                    }
+
+                }
+                return null;
+            }
+        });
+        User user = userService.findUserById(1);
+        assertNotNull(user);
+    }
+
+    @Test
+    public void findUserByEmail() {
+        when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
+
+                for (User userIn : dataBase) {
+                    if (userIn.getEmail().equals(invocation.getArguments()[0])) {
+                        return userIn;
+                    }
+                }
+
+                return null;
+            }
+        });
+        User user = userService.findUserByEmail("email1@email.com");
+        assertNotNull(user);
+    }
+
+    @Test
+    public void findAll() {
+        when(daoUserMock.findAll()).thenReturn(dataBase);
+        List<User> users = userService.findAllUsers();
+
+        assertEquals(users, dataBase);
+    }
+
+    @Test
+    public void updateUser() {
+        User user = dataBase.get(0);
+        String newUsername = "updated";
+        User update = new User(user.getEmail(), user.getUsername(), user.getPassword());
+        update.setId(user.getId());
+        update.setUsername(newUsername);
+
+        when(daoUserMock.updateUser(any(User.class))).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
+                User user = (User) invocation.getArguments()[0];
+                for (int i = 0; i < dataBase.size(); i++) {
+                    User userX = dataBase.get(i);
+                    if (user.getId() == userX.getId()) {
+                        System.out.println("DATABASE BEFORE CHANGES:\n " + dataBase);
+                        dataBase.set(i, user);
+                        return user;
+                    }
+                }
+                return null;
+            }
+        });
+        User updatedUser = userService.updateUser(update);
+        if (updatedUser != null) {
+            System.out.println("DATABASE AFTER CHANGES:\n " + dataBase);
+            assertEquals(updatedUser.getUsername(), newUsername);
+        } else {
+            assertNull(updatedUser);
+        }
+    }
+
+    @Test
+    public void deleteUser() {
+        when(daoUserMock.deleteById(anyInt())).thenAnswer(new Answer<Boolean>() {
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
+                Integer userId = (int) invocation.getArguments()[0];
+                for (User userIn : dataBase) {
+                    if (userIn.getId() == userId) {
+                        System.out.println("DATABASE BEFORE CHANGES:\n " + dataBase);
+                        dataBase.remove(userIn);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        boolean result = userService.deleteUser(1);
+        System.out.println("DATABASE AFTER CHANGES:\n " + dataBase);
+        assertTrue(result);
     }
 
 }

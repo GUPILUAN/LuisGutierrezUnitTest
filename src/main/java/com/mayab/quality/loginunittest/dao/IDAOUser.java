@@ -1,15 +1,22 @@
 package com.mayab.quality.loginunittest.dao;
 
+import java.util.List;
+
 import com.mayab.quality.loginunittest.model.User;
 
 public interface IDAOUser {
-    public User findUserByUsername(String username);
+    User findByUserName(String name);
 
-    public User findUserByEmail(String email);
+    int save(User user);
 
-    public User registerUser(User user);
+    User findUserByEmail(String email);
 
-    public boolean deleteUser(String username);
+    List<User> findAll();
 
-    public boolean updateUser(User user);
+    User findById(int id);
+
+    boolean deleteById(int id);
+
+    User updateUser(User userOld);
+
 }

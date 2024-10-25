@@ -1,13 +1,21 @@
 package com.mayab.quality.loginunittest.dao;
 
+import java.util.List;
+
 import com.mayab.quality.loginunittest.model.User;
 
 public class DAOUser implements IDAOUser {
 
     @Override
-    public User findUserByUsername(String username) {
+    public User findByUserName(String name) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findUserByUsername'");
+        throw new UnsupportedOperationException("Unimplemented method 'findByUserName'");
+    }
+
+    @Override
+    public int save(User user) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
     }
 
     @Override
@@ -17,19 +25,25 @@ public class DAOUser implements IDAOUser {
     }
 
     @Override
-    public User registerUser(User user) {
+    public List<User> findAll() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registerUser'");
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 
     @Override
-    public boolean deleteUser(String username) {
+    public User findById(int id) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 
     @Override
-    public boolean updateUser(User user) {
+    public boolean deleteById(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    }
+
+    @Override
+    public User updateUser(User userOld) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
     }

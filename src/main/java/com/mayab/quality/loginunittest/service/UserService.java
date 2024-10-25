@@ -1,28 +1,66 @@
 package com.mayab.quality.loginunittest.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mayab.quality.loginunittest.dao.IDAOUser;
 import com.mayab.quality.loginunittest.model.User;
 
 public class UserService {
-    private IDAOUser daoUser;
 
-    public UserService(IDAOUser daoUser) {
-        this.daoUser = daoUser;
+    private IDAOUser dao;
+
+    public UserService(IDAOUser dao) {
+        this.dao = dao;
     }
 
     public User createUser(String email, String username, String password) {
-        User userFound = this.daoUser.findUserByEmail(email);
-        return userFound == null && password.length() >= 8 && password.length() <= 16
-                ? this.daoUser.registerUser(new User(email, username, password))
-                : null;
+
+        if (password.length() >= 8 && password.length() <= 16) {
+            User user = dao.findUserByEmail(email);
+
+            if (user == null) {
+                user = new User(email, username, password);
+                int id = dao.save(user);
+                user.setId(id);
+                return user;
+            }
+
+        }
+        return null;
+    }
+
+    public List<User> findAllUsers() {
+        List<User> users = new ArrayList<User>();
+        users = dao.findAll();
+
+        return users;
+    }
+
+    public User findUserByEmail(String email) {
+
+        return dao.findUserByEmail(email);
+    }
+
+    public User findUserById(int id) {
+
+        return dao.findById(id);
+    }
+
+    public User updateUser(User user) {
+        return dao.updateUser(user);
+    }
+
+    public boolean deleteUser(int id) {
+        return dao.deleteById(id);
     }
 
     public boolean logIn(String username, String password) {
-        User userFound = daoUser.findUserByUsername(username);
-        if (userFound != null && userFound.getPassword().equals(password)) {
-            userFound.setLoggedIn(true);
+        User user = dao.findByUserName(username);
+        if (user != null && user.getPassword().equals(password)) {
             return true;
         }
         return false;
+
     }
 }
