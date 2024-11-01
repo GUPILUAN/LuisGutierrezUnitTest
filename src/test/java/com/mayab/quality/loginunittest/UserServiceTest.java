@@ -36,7 +36,7 @@ public class UserServiceTest {
         userMock = mock(User.class);
         userService = new UserService(daoUserMock);
         dataBase = new ArrayList<>();
-        userAlreadyRegistered = new User("email1@email.com", "user1", "password1");
+        userAlreadyRegistered = new User("user1", "password1", "email1@email.com");
         userAlreadyRegistered.setId(1);
         dataBase.add(userAlreadyRegistered);
     }
@@ -131,29 +131,12 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findUserById() {
-        when(daoUserMock.findById(anyInt())).thenAnswer(new Answer<User>() {
-            public User answer(InvocationOnMock invocation) throws Throwable {
-                Integer userId = (int) invocation.getArguments()[0];
-                for (User user : dataBase) {
-                    if (user.getId() == userId) {
-                        return user;
-                    }
-
-                }
-                return null;
-            }
-        });
-        User user = userService.findUserById(1);
-        assertNotNull(user);
-    }
-
-    @Test
     public void findUserByEmail() {
         when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
             public User answer(InvocationOnMock invocation) throws Throwable {
 
                 for (User userIn : dataBase) {
+                    System.out.println(userIn + "AAAAAAA");
                     if (userIn.getEmail().equals(invocation.getArguments()[0])) {
                         return userIn;
                     }
@@ -163,6 +146,25 @@ public class UserServiceTest {
             }
         });
         User user = userService.findUserByEmail("email1@email.com");
+        assertNotNull(user);
+    }
+
+    @Test
+    public void findUserById() {
+        when(daoUserMock.findById(anyInt())).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
+                Integer userId = (int) invocation.getArguments()[0];
+                for (User user : dataBase) {
+
+                    if (user.getId() == userId) {
+                        return user;
+                    }
+
+                }
+                return null;
+            }
+        });
+        User user = userService.findUserById(1);
         assertNotNull(user);
     }
 
@@ -178,7 +180,7 @@ public class UserServiceTest {
     public void updateUser() {
         User user = dataBase.get(0);
         String newUsername = "updated";
-        User update = new User(user.getEmail(), user.getUsername(), user.getPassword());
+        User update = new User(user.getUsername(), user.getPassword(), user.getEmail());
         update.setId(user.getId());
         update.setUsername(newUsername);
 

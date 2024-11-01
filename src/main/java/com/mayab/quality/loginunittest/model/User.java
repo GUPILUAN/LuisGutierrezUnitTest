@@ -7,10 +7,14 @@ public class User {
     private String email;
     private boolean isLoggedIn;
 
-    public User(String email, String username, String password) {
+    public User(String username, String password, String email) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.isLoggedIn = false;
+    }
+
+    public User() {
         this.isLoggedIn = false;
     }
 
@@ -34,8 +38,8 @@ public class User {
         return this.email;
     }
 
-    public boolean isLoggedIn() {
-        return this.isLoggedIn;
+    public int isLoggedIn() {
+        return this.isLoggedIn ? 1 : 0;
     }
 
     public void setLoggedIn(boolean logged) {
