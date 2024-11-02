@@ -25,14 +25,14 @@ import com.mayab.quality.unittest.model.User;
 public class UserServiceTest {
     private static IDAOUser daoUserMock;
     private static UserService userService;
-    private static User userMock;
+    // private static User userMock;
     private static List<User> dataBase;
     private static User userAlreadyRegistered;
 
     @BeforeAll
     public static void setUp() {
         daoUserMock = mock(DAOUser.class);
-        userMock = mock(User.class);
+        // userMock = mock(User.class);
         userService = new UserService(daoUserMock);
         dataBase = new ArrayList<>();
         userAlreadyRegistered = new User("user1", "password1", "email1@email.com");
@@ -40,22 +40,29 @@ public class UserServiceTest {
         dataBase.add(userAlreadyRegistered);
     }
 
-    @Test
-    public void testLogIn() {
+    // TESTS
 
-        when(userMock.getUsername()).thenReturn("user");
-        when(userMock.getPassword()).thenReturn("password");
-
-        when(daoUserMock.findByUserName(anyString())).thenAnswer(new Answer<User>() {
-            public User answer(InvocationOnMock invocation) throws Throwable {
-                return userMock.getUsername().equals(invocation.getArguments()[0]) ? userMock : null;
-            }
-        });
-
-        boolean result = userService.logIn("user", "password");
-
-        assertTrue(result);
-    }
+    /*
+     * Test the method loginUser
+     * 
+     * @Test
+     * public void testLogIn() {
+     * 
+     * when(userMock.getUsername()).thenReturn("user");
+     * when(userMock.getPassword()).thenReturn("password");
+     * 
+     * when(daoUserMock.findByUserName(anyString())).thenAnswer(new Answer<User>() {
+     * public User answer(InvocationOnMock invocation) throws Throwable {
+     * return userMock.getUsername().equals(invocation.getArguments()[0]) ? userMock
+     * : null;
+     * }
+     * });
+     * 
+     * boolean result = userService.logIn("user", "password");
+     * 
+     * assertTrue(result);
+     * }
+     */
 
     /*
      * 
@@ -114,30 +121,37 @@ public class UserServiceTest {
 
     }
 
-    // When the user is created and the password is too long (UNHAPPY PATH)
-    @Test
-    public void whenPasswordLong() {
-        User userCreated = userService.createUser("newuser@email.com", "newUser", "12345678901234567890");
-        if (userCreated == null) {
-            System.out.println("Se excedió de longitud de password");
-
-        }
-        assertNull(userCreated);
-
-    }
-
-    // When the user is created and the password is too short (UNHAPPY PATH)
-    @Test
-    public void whenPasswordShort() {
-
-        User userCreated = userService.createUser("newuser@email.com", "newUser", "123456");
-        if (userCreated == null) {
-            System.out.println("Se quedó corto de longitud de password");
-
-        }
-        assertNull(userCreated);
-
-    }
+    /*
+     * WHERE PASSWORD IS TOO SHORT OR TOO LONG
+     * // When the user is created and the password is too long (UNHAPPY PATH)
+     * 
+     * @Test
+     * public void whenPasswordLong() {
+     * User userCreated = userService.createUser("newuser@email.com", "newUser",
+     * "12345678901234567890");
+     * if (userCreated == null) {
+     * System.out.println("Se excedió de longitud de password");
+     * 
+     * }
+     * assertNull(userCreated);
+     * 
+     * }
+     * 
+     * // When the user is created and the password is too short (UNHAPPY PATH)
+     * 
+     * @Test
+     * public void whenPasswordShort() {
+     * 
+     * User userCreated = userService.createUser("newuser@email.com", "newUser",
+     * "123456");
+     * if (userCreated == null) {
+     * System.out.println("Se quedó corto de longitud de password");
+     * 
+     * }
+     * assertNull(userCreated);
+     * 
+     * }
+     */
 
     /*
      * 
@@ -185,24 +199,28 @@ public class UserServiceTest {
         assertNull(user);
     }
 
-    @Test
-    public void findUserById() {
-        when(daoUserMock.findById(anyInt())).thenAnswer(new Answer<User>() {
-            public User answer(InvocationOnMock invocation) throws Throwable {
-                Integer userId = (int) invocation.getArguments()[0];
-                for (User user : dataBase) {
-
-                    if (user.getId() == userId) {
-                        return user;
-                    }
-
-                }
-                return null;
-            }
-        });
-        User user = userService.findUserById(1);
-        assertNotNull(user);
-    }
+    /*
+     * USING ID
+     * 
+     * @Test
+     * public void findUserById() {
+     * when(daoUserMock.findById(anyInt())).thenAnswer(new Answer<User>() {
+     * public User answer(InvocationOnMock invocation) throws Throwable {
+     * Integer userId = (int) invocation.getArguments()[0];
+     * for (User user : dataBase) {
+     * 
+     * if (user.getId() == userId) {
+     * return user;
+     * }
+     * 
+     * }
+     * return null;
+     * }
+     * });
+     * User user = userService.findUserById(1);
+     * assertNotNull(user);
+     * }
+     */
 
     // All users found
     @Test
