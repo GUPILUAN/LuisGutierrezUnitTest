@@ -57,7 +57,14 @@ public class UserServiceTest {
         assertTrue(result);
     }
 
-    // When the user is created
+    /*
+     * 
+     * CREATE
+     * 
+     * 
+     */
+
+    // When the user is created (HAPPY PATH)
     @Test
     public void creatingUser() {
 
@@ -70,29 +77,7 @@ public class UserServiceTest {
 
     }
 
-    @Test
-    public void whenPasswordLong() {
-        User userCreated = userService.createUser("newuser@email.com", "newUser", "12345678901234567890");
-        if (userCreated == null) {
-            System.out.println("Se excedió de longitud de password");
-
-        }
-        assertNull(userCreated);
-
-    }
-
-    @Test
-    public void whenPasswordShort() {
-
-        User userCreated = userService.createUser("newuser@email.com", "newUser", "123456");
-        if (userCreated == null) {
-            System.out.println("Se quedó corto de longitud de password");
-
-        }
-        assertNull(userCreated);
-
-    }
-
+    // When the user is created and the email is already registered (UNHAPPY PATH)
     @Test
     public void whenUserAlreadyExist() {
 
@@ -129,13 +114,46 @@ public class UserServiceTest {
 
     }
 
+    // When the user is created and the password is too long (UNHAPPY PATH)
+    @Test
+    public void whenPasswordLong() {
+        User userCreated = userService.createUser("newuser@email.com", "newUser", "12345678901234567890");
+        if (userCreated == null) {
+            System.out.println("Se excedió de longitud de password");
+
+        }
+        assertNull(userCreated);
+
+    }
+
+    // When the user is created and the password is too short (UNHAPPY PATH)
+    @Test
+    public void whenPasswordShort() {
+
+        User userCreated = userService.createUser("newuser@email.com", "newUser", "123456");
+        if (userCreated == null) {
+            System.out.println("Se quedó corto de longitud de password");
+
+        }
+        assertNull(userCreated);
+
+    }
+
+    /*
+     * 
+     * 
+     * RETRIEVE / READ TEST
+     * 
+     * 
+     */
+
+    // When the user is found (HAPPY PATH)
     @Test
     public void findUserByEmail() {
         when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
             public User answer(InvocationOnMock invocation) throws Throwable {
 
                 for (User userIn : dataBase) {
-                    System.out.println(userIn + "AAAAAAA");
                     if (userIn.getEmail().equals(invocation.getArguments()[0])) {
                         return userIn;
                     }
@@ -146,6 +164,25 @@ public class UserServiceTest {
         });
         User user = userService.findUserByEmail("email1@email.com");
         assertNotNull(user);
+    }
+
+    // When the user is not found (UNHAPPY PATH)
+    @Test
+    public void findUserByEmailFail() {
+        when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
+
+                for (User userIn : dataBase) {
+                    if (userIn.getEmail().equals(invocation.getArguments()[0])) {
+                        return userIn;
+                    }
+                }
+
+                return null;
+            }
+        });
+        User user = userService.findUserByEmail("noemail@email.com");
+        assertNull(user);
     }
 
     @Test
@@ -167,6 +204,7 @@ public class UserServiceTest {
         assertNotNull(user);
     }
 
+    // All users found
     @Test
     public void findAll() {
         when(daoUserMock.findAll()).thenReturn(dataBase);
@@ -174,6 +212,13 @@ public class UserServiceTest {
 
         assertEquals(users, dataBase);
     }
+
+    /*
+     * 
+     * 
+     * UPDATE TEST
+     * 
+     */
 
     @Test
     public void updateUser() {
@@ -206,6 +251,13 @@ public class UserServiceTest {
         }
     }
 
+    /*
+     * 
+     * 
+     * DELETE TEST
+     * 
+     * 
+     */
     @Test
     public void deleteUser() {
         when(daoUserMock.deleteById(anyInt())).thenAnswer(new Answer<Boolean>() {
