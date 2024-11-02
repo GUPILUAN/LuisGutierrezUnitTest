@@ -1,4 +1,4 @@
-package com.mayab.quality.loginunittest;
+package com.mayab.quality.unittest.dao;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,8 +17,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mayab.quality.loginunittest.dao.DAOUser;
-import com.mayab.quality.loginunittest.model.User;
+import com.mayab.quality.unittest.model.User;
 
 public class UserDaoTest extends DBTestCase {
 

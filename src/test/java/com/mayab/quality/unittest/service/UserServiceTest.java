@@ -1,4 +1,4 @@
-package com.mayab.quality.loginunittest;
+package com.mayab.quality.unittest.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,10 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.mayab.quality.loginunittest.dao.DAOUser;
-import com.mayab.quality.loginunittest.dao.IDAOUser;
-import com.mayab.quality.loginunittest.model.User;
-import com.mayab.quality.loginunittest.service.UserService;
+import com.mayab.quality.unittest.dao.DAOUser;
+import com.mayab.quality.unittest.dao.IDAOUser;
+import com.mayab.quality.unittest.model.User;
 
 public class UserServiceTest {
     private static IDAOUser daoUserMock;

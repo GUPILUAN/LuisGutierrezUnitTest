@@ -1,10 +1,10 @@
-package com.mayab.quality.loginunittest.service;
+package com.mayab.quality.unittest.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mayab.quality.loginunittest.dao.IDAOUser;
-import com.mayab.quality.loginunittest.model.User;
+import com.mayab.quality.unittest.dao.IDAOUser;
+import com.mayab.quality.unittest.model.User;
 
 public class UserService {
 

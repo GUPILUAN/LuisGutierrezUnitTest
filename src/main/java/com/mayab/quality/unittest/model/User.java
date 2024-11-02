@@ -1,4 +1,4 @@
-package com.mayab.quality.loginunittest.model;
+package com.mayab.quality.unittest.model;
 
 public class User {
     private int id;

@@ -1,10 +1,10 @@
-package com.mayab.quality.loginunittest.dao;
+package com.mayab.quality.unittest.dao;
 
 import java.sql.*;
 import java.util.*;
 
-import com.mayab.quality.loginunittest.config.OracleConnection;
-import com.mayab.quality.loginunittest.model.User;
+import com.mayab.quality.unittest.config.OracleConnection;
+import com.mayab.quality.unittest.model.User;
 
 public class DAOUser implements IDAOUser {
     private OracleConnection oracleConnection;

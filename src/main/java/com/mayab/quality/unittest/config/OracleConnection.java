@@ -1,4 +1,4 @@
-package com.mayab.quality.loginunittest.config;
+package com.mayab.quality.unittest.config;
 
 import java.sql.*;
 

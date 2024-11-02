@@ -1,8 +1,8 @@
-package com.mayab.quality.loginunittest.dao;
+package com.mayab.quality.unittest.dao;
 
 import java.util.List;
 
-import com.mayab.quality.loginunittest.model.User;
+import com.mayab.quality.unittest.model.User;
 
 public interface IDAOUser {
     User findByUserName(String name);

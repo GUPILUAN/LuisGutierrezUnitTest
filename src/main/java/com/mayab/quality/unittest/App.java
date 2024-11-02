@@ -1,12 +1,9 @@
 package com.mayab.quality.unittest;
 
-/**
- * Hello world!
- */
-import com.mayab.quality.loginunittest.config.OracleConnection;
-import com.mayab.quality.loginunittest.dao.DAOUser;
-import com.mayab.quality.loginunittest.dao.IDAOUser;
 //import com.mayab.quality.loginunittest.model.User;
+import com.mayab.quality.unittest.config.OracleConnection;
+import com.mayab.quality.unittest.dao.DAOUser;
+import com.mayab.quality.unittest.dao.IDAOUser;
 
 class App {
     public static void main(String[] args) {
