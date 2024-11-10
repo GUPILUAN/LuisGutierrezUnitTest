@@ -87,7 +87,6 @@ public class UserServiceTest {
     // When the user is created and the email is already registered (UNHAPPY PATH)
     @Test
     public void whenUserAlreadyExist() {
-
         when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
             public User answer(InvocationOnMock invocation) throws Throwable {
 

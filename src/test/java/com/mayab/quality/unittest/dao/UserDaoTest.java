@@ -9,6 +9,7 @@ import org.dbunit.DBTestCase;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
@@ -93,21 +94,29 @@ public class UserDaoTest extends DBTestCase {
 
     @Test
     public void testAgregarUsuario() {
-        User usuario = new User("username2", "123456", "correo2@correo.com");
+
+        User usuario = new User("username6", "12345678", "correo6@correo.com");
         // Verificar que el usuario fue insertado correctamente.
         verifyUserInserted(usuario);
+    }
+
+    @Test
+    public void testAddUserQuery() {
+        User usuario = new User("username1", "12345678", "correo1@correo.com");
+        // Verificar
+        verifyUserInsertedByQuery(usuario);
+
     }
 
     private void verifyUserInserted(User usuario) {
         daoUserOracle.save(usuario);
         try {
             IDatabaseConnection conn = getConnection();
-
             IDataSet databaseDataSet = conn.createDataSet();
             ITable actualTable = databaseDataSet.getTable("USUARIOS");
 
             // Read XML with the expected result
-            IDataSet expectedDataSet = new FlatXmlDataSetBuilder().build(new File("src/resources/create.xml"));
+            IDataSet expectedDataSet = new FlatXmlDataSetBuilder().build(new File("src/resources/createUser.xml"));
             ITable expectedTable = expectedDataSet.getTable("USUARIOS");
 
             Assertion.assertEquals(expectedTable, actualTable);
@@ -116,4 +125,24 @@ public class UserDaoTest extends DBTestCase {
         }
     }
 
+    private void verifyUserInsertedByQuery(User usuario) {
+        int newId = daoUserOracle.save(usuario);
+        try {
+            IDatabaseConnection conn = getConnection();
+
+            // IDataSet databaseDataSet = conn.createDataSet();
+            QueryDataSet actualTable = new QueryDataSet(conn);
+            actualTable.addTable("insertTMP", "SELECT * FROM USUARIOS WHERE ID = " + newId);
+
+            String actualUsername = (String) actualTable.getTable("insertTMP").getValue(0, "username");
+            String actualEmail = (String) actualTable.getTable("insertTMP").getValue(0, "email");
+            String actualPassword = (String) actualTable.getTable("insertTMP").getValue(0, "password");
+
+            assertEquals(actualUsername, usuario.getUsername());
+            assertEquals(actualEmail, usuario.getEmail());
+            assertEquals(actualPassword, usuario.getPassword());
+        } catch (Exception e) {
+            fail("Error en la verificación de la inserción: " + e.getMessage());
+        }
+    }
 }

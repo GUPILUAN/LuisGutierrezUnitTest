@@ -20,7 +20,7 @@ public class UserService {
             User user = dao.findUserByEmail(email);
 
             if (user == null) {
-                user = new User(email, username, password);
+                user = new User(username, password, email);
                 int id = dao.save(user);
                 user.setId(id);
                 return user;

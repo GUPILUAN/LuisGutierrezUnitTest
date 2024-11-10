@@ -73,7 +73,7 @@ public class DAOUser implements IDAOUser {
 
     @Override
     public User findUserByEmail(String email) {
-        User user = new User();
+        User user = null;
         Connection con = oracleConnection.connect();
         if (con == null) {
             System.out.println("Error connecting to database");
@@ -85,6 +85,7 @@ public class DAOUser implements IDAOUser {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                user = new User();
                 user.setId(rs.getInt(1));
                 user.setUsername(rs.getString(2));
                 user.setPassword(rs.getString(3));
@@ -108,7 +109,7 @@ public class DAOUser implements IDAOUser {
             return list;
         }
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM USUARIOS");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM USUARIOS ORDER BY ID");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 User user = new User();
@@ -130,7 +131,7 @@ public class DAOUser implements IDAOUser {
     @Override
     public User findById(int id) {
 
-        User user = new User();
+        User user = null;
         Connection con = oracleConnection.connect();
         if (con == null) {
             System.out.println("Error connecting to database");
@@ -142,7 +143,9 @@ public class DAOUser implements IDAOUser {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM USUARIOS WHERE id=?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
+                user = new User();
                 user.setId(rs.getInt(1));
                 user.setUsername(rs.getString(2));
                 user.setPassword(rs.getString(3));

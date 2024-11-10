@@ -5,4 +5,5 @@
     <usuarios ID="3" USERNAME="username3" EMAIL="correo3@correo.com" PASSWORD="34567890" ISLOGGEDIN="0"/>
     <usuarios ID="4" USERNAME="username4" EMAIL="correo4@correo.com" PASSWORD="45678901" ISLOGGEDIN="0"/>
     <usuarios ID="5" USERNAME="username5" EMAIL="correo5@correo.com" PASSWORD="56789012" ISLOGGEDIN="0"/>
+    <usuarios ID="6" USERNAME="username6" EMAIL="correo6@correo.com" PASSWORD="12345678" ISLOGGEDIN="0"/>
 </dataset>
