@@ -259,10 +259,12 @@ public class UserServiceDbTest extends DBTestCase {
     // Update user
     @Test
     public void testUpdate() {
+        String newUsername = "usernameUpdated";
         User userFound = userService.findUserByEmail("correo1@correo.com");
-        userFound.setUsername("usernameUpdated");
+        userFound.setUsername(newUsername);
         User userUpdated = userService.updateUser(userFound);
 
+        assertNotNull(userUpdated);
         try {
 
             // Read XML with the expected result

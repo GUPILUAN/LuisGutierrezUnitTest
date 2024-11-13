@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        return dao.updateUser(user);
+        return dao.findById(user.getId()).getEmail().equals(user.getEmail()) ? dao.updateUser(user) : null;
     }
 
     public boolean deleteUser(int id) {
