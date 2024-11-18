@@ -30,17 +30,41 @@ public class SeleniumTest {
     @Test
     public void testUntitledTestCase() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
-        driver.get("https://www.google.com/");
-        driver.findElement(By.id("APjFqb")).clear();
-        driver.findElement(By.id("APjFqb")).sendKeys("kittens");
-        driver.findElement(
-                By.xpath("//img[contains(@src,'https://www.google.com/logos/fnbx/animal_paws/cat_kp_dm.gif')]"))
-                .click();
+
+        /*
+         * driver.get("https://www.google.com/");
+         * driver.findElement(By.id("APjFqb")).clear();
+         * driver.findElement(By.id("APjFqb")).sendKeys("kittens");
+         * driver.findElement(By.id("APjFqb")).sendKeys(Keys.RETURN);
+         * driver.findElement(
+         * By.xpath(
+         * "//img[contains(@src,'https://www.google.com/logos/fnbx/animal_paws/cat_kp_dm.gif')]"
+         * ))
+         * .click();
+         * TimeUnit.SECONDS.sleep(5);
+         * driver.findElement(By.xpath(
+         * "/html/body/div[4]/div/div[12]/div[1]/div[2]/div[2]/div/div/div[2]/div[7]/div/div/div[1]/div/div/span/a"
+         * ))
+         * .click();
+         */
+
+        driver.get("https://www.facebook.com/");
+        driver.findElement(By.id("email")).sendKeys("test@email.com");
+        driver.findElement(By.id("pass")).sendKeys("test123");
+        driver.findElement(By.name("login")).click();
+        TimeUnit.SECONDS.sleep(5);
+        String actualResult = driver
+                .findElement(By.xpath("//*[@id=\"loginform\"]/div[2]/div[2]"))
+                .getText();
+        System.out.println(actualResult);
+        Assert.assertEquals("The password you’ve entered is incorrect.\n" + //
+                "Forgot Password?".strip(), actualResult.strip());
+
     }
 
     @After
     public void tearDown() throws Exception {
-        TimeUnit.SECONDS.sleep(5);
+
         driver.quit();
         String verificationErrorString = verificationErrors.toString();
         if (!"".equals(verificationErrorString)) {
