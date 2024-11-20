@@ -221,10 +221,14 @@ public class CRUDSeleniumTest {
                 // the record that will be eliminated by its email
                 if (columna.getText().equals("testluis@email.com")) {
                     WebElement boton = fila.findElement(By.className("black"));
+                    assertNotNull(boton);
                     boton.click();
                     try {
                         TimeUnit.SECONDS.sleep(2);
                         driver.findElement(By.xpath("/html/body/div[3]/div/div[3]/button[1]")).click();
+
+                        // exit the funtion to avoid an error if the record deleted was the only record
+                        // in the table
                         return;
 
                     } catch (InterruptedException e) {
