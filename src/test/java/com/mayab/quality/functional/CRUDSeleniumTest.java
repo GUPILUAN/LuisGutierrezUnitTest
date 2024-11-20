@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+//Tests will execute in order
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CRUDSeleniumTest {
     private WebDriver driver;
@@ -22,6 +23,7 @@ public class CRUDSeleniumTest {
     private StringBuffer verificationErrors = new StringBuffer();
     JavascriptExecutor js;
 
+    // setup
     @Before
     public void setUp() throws Exception {
         WebDriverManager.chromedriver().setup();
@@ -32,13 +34,14 @@ public class CRUDSeleniumTest {
         js = (JavascriptExecutor) driver;
     }
 
+    // create a new record
     @Test
     public void test1_createNewRecord() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
         driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/button")).click();
-        driver.findElement(By.name("name")).sendKeys("test name");
-        driver.findElement(By.name("email")).sendKeys("test@email.com");
+        driver.findElement(By.name("name")).sendKeys("test luis");
+        driver.findElement(By.name("email")).sendKeys("testluis@email.com");
         driver.findElement(By.name("age")).sendKeys("24");
         driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div")).click();
         driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div/div[2]/div[1]")).click();
@@ -58,13 +61,15 @@ public class CRUDSeleniumTest {
 
     }
 
+    // trying to create a new record but fails cause the email is already registered
     @Test
     public void test2_createExistingEmail() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
         driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/button")).click();
         driver.findElement(By.name("name")).sendKeys("new test name");
-        driver.findElement(By.name("email")).sendKeys("test@email.com");
+        // this email is already registered in the previuous test
+        driver.findElement(By.name("email")).sendKeys("testluis@email.com");
         driver.findElement(By.name("age")).sendKeys("24");
         driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div")).click();
         driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div/div[2]/div[1]")).click();
@@ -83,6 +88,7 @@ public class CRUDSeleniumTest {
 
     }
 
+    // test edit record
     @Test
     public void test3_editRecord() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
@@ -95,7 +101,8 @@ public class CRUDSeleniumTest {
         filas.forEach(fila -> {
             List<WebElement> columnas = fila.findElements(By.tagName("td"));
             columnas.forEach(columna -> {
-                if (columna.getText().equals("test@email.com")) {
+                // the record tha will be edited by its email
+                if (columna.getText().equals("testluis@email.com")) {
                     WebElement boton = fila.findElement(By.className("blue"));
                     boton.click();
                     try {
@@ -128,9 +135,11 @@ public class CRUDSeleniumTest {
 
     }
 
+    // finding a record with a given name
     @Test
-    public void test4_getOneByName() throws Exception {
-        String nameWanted = "Test Name";
+    public void test4_getByName() throws Exception {
+        // Name you are looking for
+        String nameWanted = "Test Luis";
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
         TimeUnit.SECONDS.sleep(2);
@@ -157,10 +166,16 @@ public class CRUDSeleniumTest {
 
         });
 
-        System.out.println("Buscando 'Test Name': ");
+        System.out.println("Buscando 'Test Luis': ");
         System.out.println(datosTabla);
+
+        datosTabla.forEach(dato -> {
+            assertEquals(nameWanted, dato.get(0));
+        });
+        assertTrue(datosTabla.size() >= 1);
     }
 
+    // print all records and checks if the table is not empty
     @Test
     public void test5_getAll() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
@@ -187,8 +202,10 @@ public class CRUDSeleniumTest {
 
         System.out.println("Todos los datos de la tabla: ");
         System.out.println(datosTabla);
+        assertFalse(datosTabla.size() == 0);
     }
 
+    // delete a record
     @Test
     public void test6_deleteRecord() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
@@ -201,7 +218,8 @@ public class CRUDSeleniumTest {
         filas.forEach(fila -> {
             List<WebElement> columnas = fila.findElements(By.tagName("td"));
             columnas.forEach(columna -> {
-                if (columna.getText().equals("test@email.com")) {
+                // the record that will be eliminated by its email
+                if (columna.getText().equals("testluis@email.com")) {
                     WebElement boton = fila.findElement(By.className("black"));
                     boton.click();
                     try {
@@ -220,6 +238,7 @@ public class CRUDSeleniumTest {
 
     }
 
+    // tear down
     @After
     public void tearDown() throws Exception {
         driver.quit();
