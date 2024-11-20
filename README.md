@@ -6,8 +6,8 @@
 
 ## UserServiceDBTest
 
-- JUnit Tab: ![SCRENSHOT2](https://raw.githubusercontent.com/GUPILUAN/LuisGutierrezUnitTest/refs/heads/main/imgs/Screenshot%202024-11-10%20at%2003.06.50.png?token=GHSAT0AAAAAACWBHSL6WTARXIPLCQJXWQVWZZ5GEZA)
+- JUnit Tab: ![SCRENSHOT2](https://github.com/GUPILUAN/LuisGutierrezUnitTest/blob/main/imgs/Screenshot%202024-11-10%20at%2003.06.50.png?raw=true)
 
 ## SeleniumCRUD
 
-- JUnit Tab: ![SCREENSHOT3](https://raw.githubusercontent.com/GUPILUAN/LuisGutierrezUnitTest/refs/heads/main/imgs/Screenshot%202024-11-19%20at%2018.43.44.png?token=GHSAT0AAAAAACWBHSL7RQYHQFHL65SAUZAYZZ5GF7Q)
+- JUnit Tab: ![SCREENSHOT3](https://github.com/GUPILUAN/LuisGutierrezUnitTest/blob/main/imgs/Screenshot%202024-11-19%20at%2018.43.44.png?raw=true)
