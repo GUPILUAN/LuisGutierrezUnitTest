@@ -35,7 +35,7 @@ public class SeleniumTest {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
-        driver = new ChromeDriver(options);
+        driver = new ChromeDriver();
         baseUrl = "https://www.google.com/";
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
         js = (JavascriptExecutor) driver;
@@ -69,17 +69,21 @@ public class SeleniumTest {
         TimeUnit.SECONDS.sleep(5);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
-            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("/html/body/div[1]/div[1]/div[1]/div/div[2]/div[2]/form/div/div[2]/div[2]")));
+            WebElement element = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//*[normalize-space(text())='The password you’ve entered is incorrect.']")));
+
             System.out.println("Elemento encontrado: " + element.getText());
             String actualResult = element.getText();
             System.out.println(actualResult);
+
             Assert.assertEquals("The password you’ve entered is incorrect.\n" + //
                     "Forgot Password?".strip(), actualResult.strip());
+
         } catch (TimeoutException e) {
             System.out.println("No se encontró el elemento dentro del tiempo de espera.");
             takeScreenShot("facebookError");
-
+            throw e;
         }
 
     }
