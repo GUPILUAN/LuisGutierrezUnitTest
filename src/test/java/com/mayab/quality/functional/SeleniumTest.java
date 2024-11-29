@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -60,9 +62,11 @@ public class SeleniumTest {
         driver.findElement(By.id("pass")).sendKeys("test123");
         driver.findElement(By.name("login")).click();
         TimeUnit.SECONDS.sleep(5);
-        String actualResult = driver
-                .findElement(By.xpath("//*[@id=\"loginform\"]/div[2]/div[2]"))
-                .getText();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement element = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='loginform']/div[2]/div[2]")));
+
+        String actualResult = element.getText();
         System.out.println(actualResult);
         Assert.assertEquals("The password you’ve entered is incorrect.\n" + //
                 "Forgot Password?".strip(), actualResult.strip());

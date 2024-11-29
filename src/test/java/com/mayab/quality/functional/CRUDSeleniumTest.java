@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -51,24 +53,45 @@ public class CRUDSeleniumTest {
     public void test1_createNewRecord() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
-        driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/button")).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement createButton = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/button")));
+        createButton.click();
         driver.findElement(By.name("name")).sendKeys("test luis");
         driver.findElement(By.name("email")).sendKeys("testluis@email.com");
         driver.findElement(By.name("age")).sendKeys("24");
-        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div")).click();
-        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div/div[2]/div[1]")).click();
-        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/button")).click();
+        WebElement genderInput = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div")));
+
+        genderInput.click();
+
+        WebElement maleInput = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div/div[2]/div[1]")));
+
+        maleInput.click();
+
+        WebElement submit = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("/html/body/div[3]/div/div[2]/form/button")));
+        submit.click();
         TimeUnit.SECONDS.sleep(2);
-        String successMessage = driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/div"))
+        String successMessage = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/div")))
                 .getText();
 
-        String success = driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/p")).getText();
+        String success = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/p")))
+                .getText();
 
         System.out.println(success);
         assertEquals("Nice one!", successMessage);
         assertEquals("Successfully added!", success);
 
-        driver.findElement(By.xpath("/html/body/div[3]/div/i")).click();
         TimeUnit.SECONDS.sleep(2);
         takeScreenShot("create");
 
@@ -79,19 +102,37 @@ public class CRUDSeleniumTest {
     public void test2_createExistingEmail() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
-        driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/button")).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/button")))
+                .click();
         driver.findElement(By.name("name")).sendKeys("new test name");
         // this email is already registered in the previuous test
         driver.findElement(By.name("email")).sendKeys("testluis@email.com");
         driver.findElement(By.name("age")).sendKeys("24");
-        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div")).click();
-        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div/div[2]/div[1]")).click();
-        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/button")).click();
+        wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div")))
+                .click();
+        wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(
+                                By.xpath("/html/body/div[3]/div/div[2]/form/div[3]/div[2]/div/div[2]/div[1]")))
+                .click();
+        wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[2]/form/button")))
+                .click();
         TimeUnit.SECONDS.sleep(2);
-        String noSuccessMessage = driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[5]/div/div"))
+        String noSuccessMessage = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[2]/form/div[5]/div/div")))
                 .getText();
 
-        String noSuccess = driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[5]/div/p")).getText();
+        String noSuccess = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[2]/form/div[5]/div/p")))
+                .getText();
 
         System.out.println(noSuccess);
         assertEquals("Woah!", noSuccessMessage);
@@ -107,8 +148,11 @@ public class CRUDSeleniumTest {
     public void test3_editRecord() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         TimeUnit.SECONDS.sleep(2);
-        WebElement tabla = driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/table"));
+        WebElement tabla = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/table")));
         WebElement body = tabla.findElement(By.tagName("tbody"));
         List<WebElement> filas = body.findElements(By.tagName("tr"));
 
@@ -124,14 +168,22 @@ public class CRUDSeleniumTest {
                         driver.findElement(By.name("age")).sendKeys(Keys.BACK_SPACE);
                         driver.findElement(By.name("age")).sendKeys(Keys.BACK_SPACE);
                         driver.findElement(By.name("age")).sendKeys("30");
-                        driver.findElement(By.xpath("/html/body/div[3]/div/div[2]/form/button")).click();
+                        wait
+                                .until(ExpectedConditions
+                                        .visibilityOfElementLocated(
+                                                By.xpath("/html/body/div[3]/div/div[2]/form/button")))
+                                .click();
                         TimeUnit.SECONDS.sleep(2);
-                        String successMessage = driver
-                                .findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/div"))
+                        String successMessage = wait
+                                .until(ExpectedConditions
+                                        .visibilityOfElementLocated(
+                                                By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/div")))
                                 .getText();
 
-                        String success = driver
-                                .findElement(By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/p"))
+                        String success = wait
+                                .until(ExpectedConditions
+                                        .visibilityOfElementLocated(
+                                                By.xpath("/html/body/div[3]/div/div[2]/form/div[4]/div/p")))
                                 .getText();
 
                         assertEquals("Nice one!", successMessage);
@@ -157,8 +209,11 @@ public class CRUDSeleniumTest {
         String nameWanted = "Test Luis";
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         TimeUnit.SECONDS.sleep(2);
-        WebElement tabla = driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/table"));
+        WebElement tabla = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/table")));
 
         WebElement body = tabla.findElement(By.tagName("tbody"));
         List<WebElement> filas = body.findElements(By.tagName("tr"));
@@ -196,8 +251,11 @@ public class CRUDSeleniumTest {
     public void test5_getAll() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         TimeUnit.SECONDS.sleep(2);
-        WebElement tabla = driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/table"));
+        WebElement tabla = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/table")));
 
         WebElement body = tabla.findElement(By.tagName("tbody"));
         List<WebElement> filas = body.findElements(By.tagName("tr"));
@@ -227,40 +285,35 @@ public class CRUDSeleniumTest {
     public void test6_deleteRecord() throws Exception {
         driver.get(baseUrl + "chrome://newtab/");
         driver.get("https://mern-crud-mpfr.onrender.com");
-        TimeUnit.SECONDS.sleep(2);
-        WebElement tabla = driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/table"));
-        WebElement body = tabla.findElement(By.tagName("tbody"));
-        List<WebElement> filas = body.findElements(By.tagName("tr"));
 
-        filas.forEach(fila -> {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        TimeUnit.SECONDS.sleep(2);
+
+        WebElement tabla = wait
+                .until(ExpectedConditions
+                        .visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/table")));
+
+        List<WebElement> filas = tabla.findElement(By.tagName("tbody")).findElements(By.tagName("tr"));
+
+        for (WebElement fila : filas) {
             List<WebElement> columnas = fila.findElements(By.tagName("td"));
-            columnas.forEach(columna -> {
-                // the record that will be eliminated by its email
+
+            for (WebElement columna : columnas) {
                 if (columna.getText().equals("testluis@email.com")) {
                     WebElement boton = fila.findElement(By.className("black"));
                     assertNotNull(boton);
+
                     boton.click();
-                    try {
-                        TimeUnit.SECONDS.sleep(2);
-                        driver.findElement(By.xpath("/html/body/div[3]/div/div[3]/button[1]")).click();
-                        takeScreenShot("delete");
-                        // exit the funtion to avoid an error if the record deleted was the only record
-                        // in the table
-                        return;
+                    wait.until(ExpectedConditions
+                            .visibilityOfElementLocated(By.xpath("/html/body/div[3]/div/div[3]/button[1]")))
+                            .click();
 
-                    } catch (InterruptedException e) {
-                        System.out.println("ERROR EN DELETE");
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    takeScreenShot("delete");
 
+                    return;
                 }
-            });
-
-        });
-
+            }
+        }
     }
 
     public void takeScreenShot(String fileName) throws IOException {
