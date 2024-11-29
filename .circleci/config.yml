@@ -65,10 +65,10 @@ jobs:
   publish:
     docker:
       - image: cimg/openjdk:17.0
+        environment:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - checkout
-      - run: echo "Hello world" > hello.txt
-      - run: echo "https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH"
+      - run: echo $GH_TOKEN
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -83,7 +83,7 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      # - test-java
+      #- test-java
       - publish
     # - deploy:
     #     requires:
