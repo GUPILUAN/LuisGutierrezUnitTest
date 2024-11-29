@@ -67,7 +67,8 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
-      - run: pwd
+      - run: echo "Hello world" > hello.txt
+      - run: echo "https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH"
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
