@@ -26,6 +26,7 @@ jobs:
               sleep 1
             done
             echo Failed waiting for MySQL && exit 1
+
       - run:
           name: Calculate cache key
           command: |-
@@ -37,9 +38,10 @@ jobs:
       - run:
           name: Install MySQL CLI; Import dummy data; run an example query
           command: |
-            sudo apt-get install default-mysql-client
+            sudo apt install -y mysql-client
             mysql -h 127.0.0.1 -uroot -p123456 calidad2024 < src/resources/schema.sql
-            mysql -h 127.0.0.1 -uroot -p123456 --execute="SELECT * FROM test_db.USUARIOS"
+            mysql -h 127.0.0.1 -uroot -p123456 calidad2024
+            mysql -h 127.0.0.1 -uroot -p123456 --execute="SELECT * FROM calidad2024.USUARIOS"
             echo Completado
 
       - run:
