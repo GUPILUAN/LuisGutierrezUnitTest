@@ -70,7 +70,7 @@ jobs:
           command: |
             git add .
             git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            git push -q https://GUPILUAN:$GITHUB_PERSONAL_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
