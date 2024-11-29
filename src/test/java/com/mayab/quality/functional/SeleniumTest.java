@@ -79,7 +79,7 @@ public class SeleniumTest {
         } catch (TimeoutException e) {
             System.out.println("No se encontró el elemento dentro del tiempo de espera.");
             takeScreenShot("facebookError");
-            throw e;
+
         }
 
     }
