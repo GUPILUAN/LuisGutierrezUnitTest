@@ -7,8 +7,9 @@ jobs:
       - image: cimg/openjdk:17.0
       - image: cimg/mysql:8.0
         environment:
-          MYSQL_DATABASE: calidad2024
           MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: calidad2024
+
     steps:
       - checkout
       - run:
@@ -19,8 +20,23 @@ jobs:
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
       - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+          # Our primary container isn't MYSQL so run a sleep command until it's ready.
+          name: Waiting for MySQL to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+      - run:
+          name: Install MySQL CLI; Import dummy data; run an example query
+          command: |
+            sudo apt-get install default-mysql-client
+            mysql -h 127.0.0.1 -uroot -p123456 calidad2024 < src/resources/schema.sql
+            mysql -h 127.0.0.1 -uroot -p123456 --execute="SELECT * FROM test_db.USUARIOS"
+            echo Completado
 
       - run:
           command: mvn -Dtest=UserServiceTest* test
