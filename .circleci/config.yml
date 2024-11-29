@@ -38,7 +38,8 @@ jobs:
       - run:
           name: Install MySQL CLI; Import dummy data; run an example query
           command: |
-            sudo apt install -y mysql-client
+            sudo apt update
+            sudo apt install default-mysql-client
             mysql -h 127.0.0.1 -uroot -p123456 calidad2024 < src/resources/schema.sql
             mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             mysql -h 127.0.0.1 -uroot -p123456 --execute="SELECT * FROM calidad2024.USUARIOS"
