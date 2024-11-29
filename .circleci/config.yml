@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Install MySQL CLI and import schema
           command: |
-            echo $GITHUB_TOKEN
+            echo $PERSONAL_TOKEN
             sudo apt update && sudo apt install default-mysql-client
             echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
@@ -71,7 +71,7 @@ jobs:
           command: |
             git add .
             git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            git push -q https://GUPILUAN:$PERSONAL_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
