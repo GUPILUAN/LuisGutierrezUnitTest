@@ -84,7 +84,7 @@ jobs:
     steps:
       - run:
           name: Imprimir Hola Mundo
-          command: echo "Hola Mundo"
+          command: echo "$GH_TOKEN"
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
