@@ -36,14 +36,14 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
 
       - run:
-          name: Install MySQL CLI; Import dummy data; run an example query
+          name: Install MySQL CLI and import schema
           command: |
-            sudo apt update
-            sudo apt install default-mysql-client
-            mysql -h 127.0.0.1 -uroot -p123456 calidad2024 < src/resources/schema.sql
-            mysql -h 127.0.0.1 -uroot -p123456 calidad2024
-            mysql -h 127.0.0.1 -uroot -p123456 --execute="SELECT * FROM calidad2024.USUARIOS"
-            echo Completado
+            sudo apt update &&  sudo apt install default-mysql-client
+            mysql -h 127.0.0.1 -uroot -p123456 calidad2024 <<EOF
+            SOURCE src/resources/schema.sql;
+            SELECT * FROM USUARIOS;
+            EOF
+            echo "Completado"
 
       - run:
           command: mvn -Dtest=UserServiceTest* test
