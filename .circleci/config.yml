@@ -1,12 +1,10 @@
 # This config was automatically generated from your source code
 # Stacks detected: deps:java:.
 version: 2.1
-orbs:
-  browser-tools: circleci/browser-tools@1.2.3
+
 jobs:
   test-java:
     docker:
-      - image: cimg/php:8.1-browsers
       - image: cimg/openjdk:17.0
       - image: cimg/mysql:8.0
         environment:
@@ -28,20 +26,20 @@ jobs:
             echo Failed waiting for MySQL && exit 1
 
       - run:
-          name: Calculate cache key
-          command: |-
-            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
-                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
-      - restore_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-
-      - run:
           name: Install MySQL CLI and import schema
           command: |
             sudo apt update && sudo apt install default-mysql-client
             echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "Completado"
+
+      - run:
+          name: Calculate cache key
+          command: |-
+            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
+                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
+      - restore_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
 
       - run:
           command: mvn -Dtest=UserServiceTest* test
