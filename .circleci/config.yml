@@ -33,8 +33,7 @@ jobs:
             echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "Completado"
-            echo $PERSONAL_TOKEN
-            echo $CIRCLE_BRANCH
+            echo "https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH"
             echo "hola"
 
       - run:
@@ -63,18 +62,12 @@ jobs:
           paths:
             - ~/.m2/repository
 
-      - run:
-          name: Configure Git
-          command: |
-            git config credential.helper 'cache --timeout=120'
-            git config user.name "GUPILUAN"
-            git config user.email "gupiluan@hotmail.com"
-      - run:
-          name: Commit and Push Changes
-          command: |
-            git add .
-            git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:$PERSONAL_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+  publish:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run: pwd
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -89,7 +82,8 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - test-java
+      # - test-java
+      - publish
     # - deploy:
     #     requires:
     #       - test-java
