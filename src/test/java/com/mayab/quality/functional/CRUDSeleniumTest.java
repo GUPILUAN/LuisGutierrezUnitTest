@@ -7,6 +7,7 @@ import org.junit.runners.MethodSorters;
 import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -33,7 +34,13 @@ public class CRUDSeleniumTest {
     public void setUp() throws Exception {
         WebDriverManager.chromedriver().setup();
         // System.setProperty("webdriver.chrome.driver", "");
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
+        driver = new ChromeDriver(options);
         baseUrl = "https://www.google.com/";
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
         js = (JavascriptExecutor) driver;
