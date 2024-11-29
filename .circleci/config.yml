@@ -65,9 +65,12 @@ jobs:
   publish:
     docker:
       - image: cimg/openjdk:17.0
-
     steps:
-      - run: echo $GITHUB_TOKEN
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          example-command "$SUPER_SECRET"
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
