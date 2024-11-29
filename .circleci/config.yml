@@ -33,7 +33,8 @@ jobs:
             echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "Completado"
-            echo ${{secrets.PERSONAL_TOKEN}}
+            echo $PERSONAL_TOKEN
+            echo $CIRCLE_BRANCH
             echo "hola"
 
       - run:
@@ -73,7 +74,7 @@ jobs:
           command: |
             git add .
             git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:${PERSONAL_TOKEN}@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            git push -q https://GUPILUAN:$PERSONAL_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
