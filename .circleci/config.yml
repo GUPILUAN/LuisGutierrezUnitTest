@@ -33,8 +33,7 @@ jobs:
             echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "Completado"
-            echo "https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH"
-            echo "hola"
+            echo "https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH"
 
       - run:
           name: Calculate cache key
@@ -56,8 +55,6 @@ jobs:
       - run:
           command: mvn test
 
-          steps:
-      - run: echo $GITHUB_TOKEN
       - run:
           name: Configure Git
           command: |
@@ -69,22 +66,13 @@ jobs:
           command: |
             git add .
             git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
-
-  publish:
-    docker:
-      - image: cimg/base:stable
-
-    steps:
-      - run:
-          name: Imprimir Hola Mundo
-          command: echo "$GH_TOKEN"
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -99,8 +87,8 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      #- test-java
-      - publish
+      - test-java
+
     # - deploy:
     #     requires:
     #       - test-java
