@@ -55,6 +55,21 @@ jobs:
             sudo apt-get install -y google-chrome-stable
       - run:
           command: mvn test
+
+          steps:
+      - run: echo $GITHUB_TOKEN
+      - run:
+          name: Configure Git
+          command: |
+            git config credential.helper 'cache --timeout=120'
+            git config user.name "GUPILUAN"
+            git config user.email "gupiluan@hotmail.com"
+      - run:
+          name: Commit and Push Changes
+          command: |
+            git add .
+            git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
+            git push -q https://GUPILUAN:$GITHUB_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
@@ -63,14 +78,11 @@ jobs:
             - ~/.m2/repository
 
   publish:
-    docker:
-      - image: cimg/openjdk:17.0
+    runs-on: ubuntu-latest
+
     steps:
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          example-command "$SUPER_SECRET"
+      - name: Imprimir Hola Mundo
+        run: echo "¡Hola Mundo!"
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
