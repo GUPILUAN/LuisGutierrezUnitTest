@@ -58,6 +58,19 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
             - ~/.m2/repository
+
+      - run:
+          name: Configure Git
+          command: |
+            git config --global user.name "${GITHUB_USER}"
+            git config --global user.email "${GITHUB_EMAIL}"
+      - run:
+          name: Commit and Push Changes
+          command: |
+            git add .
+            git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
+            git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/GUPILUAN/LuisGutierrezUnitTest.git HEAD:${CIRCLE_BRANCH}
+
   deploy:
     # This is an example deploy job, not actually used by the workflow
     docker:
