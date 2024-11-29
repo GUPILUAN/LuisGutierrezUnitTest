@@ -1,5 +1,6 @@
 package com.mayab.quality.functional;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.*;
 import static org.junit.Assert.*;
 import org.openqa.selenium.*;
@@ -10,6 +11,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -63,14 +68,27 @@ public class SeleniumTest {
         driver.findElement(By.name("login")).click();
         TimeUnit.SECONDS.sleep(5);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement element = wait
-                .until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("/html/body/div[1]/div[1]/div[1]/div/div[2]/div[2]/form/div/div[2]/div[2]")));
+        try {
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("/html/body/div[1]/div[1]/div[1]/div/div[2]/div[2]/form/div/div[2]/div[2]")));
+            System.out.println("Elemento encontrado: " + element.getText());
+            String actualResult = element.getText();
+            System.out.println(actualResult);
+            Assert.assertEquals("The password you’ve entered is incorrect.\n" + //
+                    "Forgot Password?".strip(), actualResult.strip());
+        } catch (TimeoutException e) {
+            System.out.println("No se encontró el elemento dentro del tiempo de espera.");
+            takeScreenShot("facebookError");
+            throw e;
+        }
 
-        String actualResult = element.getText();
-        System.out.println(actualResult);
-        Assert.assertEquals("The password you’ve entered is incorrect.\n" + //
-                "Forgot Password?".strip(), actualResult.strip());
+    }
+
+    public void takeScreenShot(String fileName) throws IOException {
+
+        File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        OutputStream outPath = new FileOutputStream("src/screenshots/" + fileName + ".jpeg");
+        FileUtils.copyFile(file, outPath);
 
     }
 
