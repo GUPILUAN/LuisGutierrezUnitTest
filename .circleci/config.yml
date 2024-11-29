@@ -42,7 +42,12 @@ jobs:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
 
       - run:
-          command: mvn -Dtest=UserService* test
+          name: Installing dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y wget unzip google-chrome-stable
+      - run:
+          command: mvn test
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
