@@ -78,11 +78,13 @@ jobs:
             - ~/.m2/repository
 
   publish:
-    runs-on: ubuntu-latest
+    docker:
+      - image: cimg/base:stable
 
     steps:
-      - name: Imprimir Hola Mundo
-        run: echo "¡Hola Mundo!"
+      - run:
+          name: Imprimir Hola Mundo
+          command: echo "Hola Mundo"
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
