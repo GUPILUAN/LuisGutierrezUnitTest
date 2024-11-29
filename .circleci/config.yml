@@ -63,14 +63,14 @@ jobs:
           name: Configure Git
           command: |
             git config credential.helper 'cache --timeout=120'
-            git config --global user.name "Luis Gutierrez"
-            git config --global user.email "gupiluan@hotmail.com"
+            git config user.name "Luis Gutierrez"
+            git config user.email "gupiluan@hotmail.com"
       - run:
           name: Commit and Push Changes
           command: |
             git add .
             git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:$GITHUB_PERSONAL_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            git push -q https://GUPILUAN:${{ secrets.GITHUB_TOKEN }}@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
