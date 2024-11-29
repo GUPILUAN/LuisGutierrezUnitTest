@@ -33,7 +33,7 @@ jobs:
             echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
             echo "Completado"
-            echo "$PERSONAL_TOKEN"
+            echo ${PERSONAL_TOKEN}
 
       - run:
           name: Calculate cache key
