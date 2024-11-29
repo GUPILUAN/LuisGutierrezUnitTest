@@ -64,7 +64,8 @@ public class SeleniumTest {
         TimeUnit.SECONDS.sleep(5);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement element = wait
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='loginform']/div[2]/div[2]")));
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("/html/body/div[1]/div[1]/div[1]/div/div[2]/div[2]/form/div/div[2]/div[2]")));
 
         String actualResult = element.getText();
         System.out.println(actualResult);
