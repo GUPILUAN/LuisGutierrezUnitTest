@@ -62,8 +62,8 @@ jobs:
       - run:
           name: Configure Git
           command: |
-            git config --global user.name "${GIT_COMMITTER_NAME}"
-            git config --global user.email "${GIT_COMMITTER_EMAIL}"
+            git config --global user.name "Luis Gutierrez"
+            git config --global user.email "gupiluan@hotmail.com"
       - run:
           name: Commit and Push Changes
           command: |
