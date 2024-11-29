@@ -1,5 +1,6 @@
 package com.mayab.quality.functional;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 
@@ -9,6 +10,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +63,7 @@ public class CRUDSeleniumTest {
 
         driver.findElement(By.xpath("/html/body/div[3]/div/i")).click();
         TimeUnit.SECONDS.sleep(2);
+        takeScreenShot("create");
 
     }
 
@@ -84,6 +90,7 @@ public class CRUDSeleniumTest {
         assertEquals("Woah!", noSuccessMessage);
         assertEquals("That email is already taken.", noSuccess);
 
+        takeScreenShot("alreadyIn");
         TimeUnit.SECONDS.sleep(2);
 
     }
@@ -132,6 +139,7 @@ public class CRUDSeleniumTest {
                 }
             });
         });
+        takeScreenShot("edit");
 
     }
 
@@ -173,6 +181,7 @@ public class CRUDSeleniumTest {
             assertEquals(nameWanted, dato.get(0));
         });
         assertTrue(datosTabla.size() >= 1);
+        takeScreenShot("one");
     }
 
     // print all records and checks if the table is not empty
@@ -203,6 +212,7 @@ public class CRUDSeleniumTest {
         System.out.println("Todos los datos de la tabla: ");
         System.out.println(datosTabla);
         assertFalse(datosTabla.size() == 0);
+        takeScreenShot("many");
     }
 
     // delete a record
@@ -226,7 +236,7 @@ public class CRUDSeleniumTest {
                     try {
                         TimeUnit.SECONDS.sleep(2);
                         driver.findElement(By.xpath("/html/body/div[3]/div/div[3]/button[1]")).click();
-
+                        takeScreenShot("delete");
                         // exit the funtion to avoid an error if the record deleted was the only record
                         // in the table
                         return;
@@ -234,11 +244,23 @@ public class CRUDSeleniumTest {
                     } catch (InterruptedException e) {
                         System.out.println("ERROR EN DELETE");
                         e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
 
                 }
             });
+
         });
+
+    }
+
+    public void takeScreenShot(String fileName) throws IOException {
+
+        File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        OutputStream outPath = new FileOutputStream("src/screenshots/" + fileName + ".jpeg");
+        FileUtils.copyFile(file, outPath);
 
     }
 

@@ -5,6 +5,10 @@ jobs:
   test-java:
     docker:
       - image: cimg/openjdk:17.0
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_DATABASE: calidad2024
+          MYSQL_ROOT_PASSWORD: 123456
     steps:
       - checkout
       - run:
@@ -15,7 +19,11 @@ jobs:
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
       - run:
-          command: mvn verify
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      - run:
+          command: mvn -Dtest=UserServiceTest* test
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
@@ -30,7 +38,8 @@ jobs:
       # Replace this with steps to deploy to users
       - run:
           name: deploy
-          command: '#e.g. ./deploy.sh'
+          command: "#e.g. ./deploy.sh"
+
 workflows:
   build-and-test:
     jobs:

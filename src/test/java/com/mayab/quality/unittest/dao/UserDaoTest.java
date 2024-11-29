@@ -20,25 +20,28 @@ import org.junit.jupiter.api.Test;
 
 import com.mayab.quality.unittest.model.User;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class UserDaoTest extends DBTestCase {
 
-    private DAOUser daoUserOracle;
-    private static final String DB_URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)))";
-    private static final String USERNAME = "SYSTEM";
-    private static final String PASSWORD = "1234567890";
+    private DAOMySQLUser daoMySQLUser;
+    Dotenv dotenv = Dotenv.load();
+    String databaseUrl = dotenv.get("DATABASE_MYSQL_URL");
+    String username = dotenv.get("DATABASE_MYSQL_USER");
+    String password = dotenv.get("DATABASE_MYSQL_PASSWORD");
+    String driver = dotenv.get("DATABASE_MYSQL_DRIVER");
 
     public UserDaoTest() {
         System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, "oracle.jdbc.driver.OracleDriver");
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, DB_URL);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, USERNAME);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, PASSWORD);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_SCHEMA, USERNAME);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, databaseUrl);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, username);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, password);
 
     }
 
     @BeforeEach
     protected void setUp() throws Exception {
-        daoUserOracle = new DAOUser();
+        daoMySQLUser = new DAOMySQLUser();
         IDatabaseConnection connection = null;
         try {
             connection = getConnection();
@@ -67,24 +70,15 @@ public class UserDaoTest extends DBTestCase {
     }
 
     private void executeSequenceManagement(IDatabaseConnection connection) throws Exception {
-        String plsqlBlock = "DECLARE " +
-                "   max_id NUMBER; " +
-                "BEGIN " +
-                "   SELECT NVL(MAX(id), 0) " +
-                "     INTO max_id " +
-                "     FROM usuarios; " +
-                "   EXECUTE IMMEDIATE 'DROP SEQUENCE usuarios_seq'; " +
-                "   EXECUTE IMMEDIATE 'CREATE SEQUENCE usuarios_seq START WITH ' || (max_id + 1) || ' INCREMENT BY 1'; "
-                +
-                "END;";
+        String sqlQuery = "ALTER TABLE USUARIOS AUTO_INCREMENT = 1;";
 
         try {
             java.sql.Connection jdbcConnection = connection.getConnection();
-            jdbcConnection.createStatement().execute(plsqlBlock);
+            jdbcConnection.createStatement().execute(sqlQuery);
             System.out.println("Sequence management executed successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("Error executing PL/SQL block: " + e.getMessage());
+            throw new Exception("Error executing SQL query: " + e.getMessage());
         }
     }
 
@@ -109,7 +103,7 @@ public class UserDaoTest extends DBTestCase {
     }
 
     private void verifyUserInserted(User usuario) {
-        daoUserOracle.save(usuario);
+        daoMySQLUser.save(usuario);
         try {
             IDatabaseConnection conn = getConnection();
             IDataSet databaseDataSet = conn.createDataSet();
@@ -126,7 +120,7 @@ public class UserDaoTest extends DBTestCase {
     }
 
     private void verifyUserInsertedByQuery(User usuario) {
-        int newId = daoUserOracle.save(usuario);
+        int newId = daoMySQLUser.save(usuario);
         try {
             IDatabaseConnection conn = getConnection();
 

@@ -2,10 +2,18 @@ package com.mayab.quality.unittest.config;
 
 import java.sql.*;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class OracleConnection {
 
     private String host;
     private Connection connection;
+
+    Dotenv dotenv = Dotenv.load();
+
+    String databaseUrl = dotenv.get("DATABASE_ORACLE_URL");
+    String username = dotenv.get("DATABASE_ORACLE_USER");
+    String password = dotenv.get("DATABASE_ORACLE_PASSWORD");
 
     public OracleConnection(String[] args) {
         this.host = args.length == 0 ? "localhost" : args[0];

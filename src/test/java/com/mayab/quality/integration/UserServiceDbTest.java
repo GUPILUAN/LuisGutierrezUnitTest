@@ -10,60 +10,82 @@ import java.util.List;
 import org.dbunit.Assertion;
 import org.dbunit.DBTestCase;
 import org.dbunit.PropertiesBasedJdbcDatabaseTester;
-import org.dbunit.database.DatabaseConfig;
+//import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
 //import org.dbunit.database.QueryDataSet;
 //import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.dbunit.ext.oracle.OracleDataTypeFactory;
+//import org.dbunit.ext.oracle.OracleDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.mayab.quality.unittest.dao.DAOUser;
+import com.mayab.quality.unittest.dao.DAOMySQLUser;
+//import com.mayab.quality.unittest.dao.DAOOracleUser;
 import com.mayab.quality.unittest.model.User;
 import com.mayab.quality.unittest.service.UserService;
 
-public class UserServiceDbTest extends DBTestCase {
+import io.github.cdimascio.dotenv.Dotenv;
 
+public class UserServiceDbTest extends DBTestCase {
+    Dotenv dotenv = Dotenv.load();
+
+    String databaseUrl = dotenv.get("DATABASE_MYSQL_URL");
+    String username = dotenv.get("DATABASE_MYSQL_USER");
+    String password = dotenv.get("DATABASE_MYSQL_PASSWORD");
+    String driver = dotenv.get("DATABASE_MYSQL_DRIVER");
     private UserService userService;
-    private DAOUser daoUserOracle;
-    private static final String DB_URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)))";
-    private static final String USERNAME = "SYSTEM";
-    private static final String PASSWORD = "1234567890";
+    private DAOMySQLUser daoUser;
+    // private DAOOracleUser daoUser;
+    // private static final String DB_URL =
+    // "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FREEPDB1)))";
+    // private static final String USERNAME = "SYSTEM";
+    // private static final String PASSWORD = "1234567890";
 
     public UserServiceDbTest() {
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, "oracle.jdbc.driver.OracleDriver");
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, DB_URL);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, USERNAME);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, PASSWORD);
-        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_SCHEMA, USERNAME);
+        // System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS,
+        // "oracle.jdbc.driver.OracleDriver");
+        // System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL,
+        // DB_URL);
+        // System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME,
+        // USERNAME);
+        // System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD,
+        // PASSWORD);
+        // System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_SCHEMA,
+        // USERNAME);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, driver);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, databaseUrl);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, username);
+        System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, password);
 
     }
 
     @BeforeEach
     protected void setUp() throws Exception {
-        daoUserOracle = new DAOUser();
-        userService = new UserService(daoUserOracle);
+        daoUser = new DAOMySQLUser();
+        userService = new UserService(daoUser);
         IDatabaseConnection connection = null;
         try {
             connection = getConnection();
-            connection.getConfig().setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new OracleDataTypeFactory());
+            // connection.getConfig().setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
+            // new OracleDataTypeFactory());
             // System.out.println("Connection established.");
 
             IDataSet dataSet = getDataSet();
-            // System.out.println("DataSet loaded: " + dataSet);
+            System.out.println("DataSet loaded: " + dataSet);
             // System.out.println(connection);
 
             // Truncar y limpiar la tabla
             // DatabaseOperation.TRUNCATE_TABLE.execute(connection, dataSet);
             // Iniciar la base de datos
+
             DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 
-            // Ejecutar el bloque PL/SQL para manejar la secuencia
-            executeSequenceManagement(connection);
+            // Ejecutar el bloque PL/SQL para manejar la secuencia en Oracle
+            // executeSequenceManagement(connection);
+            restartSequenceManagement(connection);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,6 +97,7 @@ public class UserServiceDbTest extends DBTestCase {
         }
     }
 
+    @SuppressWarnings("unused")
     private void executeSequenceManagement(IDatabaseConnection connection) throws Exception {
         String plsqlBlock = "DECLARE " +
                 "   max_id NUMBER; " +
@@ -94,6 +117,19 @@ public class UserServiceDbTest extends DBTestCase {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new Exception("Error executing PL/SQL block: " + e.getMessage());
+        }
+    }
+
+    private void restartSequenceManagement(IDatabaseConnection connection) throws Exception {
+        String sqlQuery = "ALTER TABLE USUARIOS AUTO_INCREMENT = 1;";
+
+        try {
+            java.sql.Connection jdbcConnection = connection.getConnection();
+            jdbcConnection.createStatement().execute(sqlQuery);
+            System.out.println("Sequence management executed successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("Error executing SQL query: " + e.getMessage());
         }
     }
 
