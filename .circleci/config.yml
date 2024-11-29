@@ -62,8 +62,8 @@ jobs:
       - run:
           name: Configure Git
           command: |
-            git config --global user.name "${GITHUB_USER}"
-            git config --global user.email "${GITHUB_EMAIL}"
+            git config --global user.name "${GIT_COMMITTER_NAME}"
+            git config --global user.email "${GIT_COMMITTER_EMAIL}"
       - run:
           name: Commit and Push Changes
           command: |
