@@ -2,7 +2,7 @@
 
 ## Screenshots final project
 
-- Link a la sección: ![alt text](https://github.com/GUPILUAN/LuisGutierrezUnitTest/tree/circleci-project-setup/src/screenshots)
+- Link a la sección: [alt text](https://github.com/GUPILUAN/LuisGutierrezUnitTest/tree/circleci-project-setup/src/screenshots)
 
 ## UserServiceTest
 
