@@ -122,7 +122,7 @@ jobs:
           command: |
             ls -l ~/workspace
             rm -rf /screen-shots-results.github.io/public/images/*
-            cp -r ~/workspace/* /screen-shots-results.github.io/public/images/
+            cp -r ~/workspace/* /screen-shots-results.github.io/public/images
 
       - run:
           name: Configure Git
