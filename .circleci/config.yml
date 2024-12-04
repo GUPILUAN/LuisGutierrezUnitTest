@@ -112,33 +112,7 @@ jobs:
       - run:
           name: Create dir
           command: |
-            mkdir -p workspace
-      - attach_workspace:
-          at: /workspace
-      - run:
-          name: Clone repository
-          command: git clone https://github.com/GUPILUAN/screen-shots-results.github.io
-      - run: ls -a
-      - run:
-          name: Copy images and erase old images
-          command: |
-            ls -l /workspace
-            rm -rf /screen-shots-results.github.io/public/images/*
-            cp -r /workspace/* /screen-shots-results.github.io/public/images/
-
-      - run:
-          name: Configure Git
-          command: |
-            git config credential.helper 'cache --timeout=120'
-            git config user.name "GUPILUAN"
-            git config user.email "gupiluan@hotmail.com"
-
-      - run:
-          name: Commit and push changes
-          command: |
-            git add .
-            git commit -m "New images"
-            git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/screen-shots-results.github.io main
+            pwd
 
   deploy:
     # This is an example deploy job, not actually used by the workflow
@@ -153,10 +127,10 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - test-java
-      - publish:
-          requires:
-            - test-java
-      - deploy:
-          requires:
-            - test-java
+      #- test-java
+      - publish
+        # requires:
+        #  - test-java
+    #   - deploy:
+    #requires:
+    # - test-java
