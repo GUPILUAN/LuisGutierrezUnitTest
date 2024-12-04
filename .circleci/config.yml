@@ -1,0 +1,159 @@
+# This config was automatically generated from your source code
+# Stacks detected: deps:java:.
+version: 2.1
+
+jobs:
+  test-java:
+    docker:
+      - image: cimg/openjdk:17.0
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: calidad2024
+
+    steps:
+      - checkout
+      - run:
+          # Our primary container isn't MYSQL so run a sleep command until it's ready.
+          name: Waiting for MySQL to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+
+      - run:
+          name: Install MySQL CLI and import schema
+          command: |
+
+            sudo apt update && sudo apt install default-mysql-client
+            echo "SOURCE src/resources/schema.sql;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
+            echo "SELECT * FROM USUARIOS;" | mysql -h 127.0.0.1 -uroot -p123456 calidad2024
+            echo "Completado"
+
+      - run:
+          name: Calculate cache key
+          command: |-
+            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
+                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
+      - restore_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+
+      - run:
+          name: Installing dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y wget gnupg
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+      - run:
+          name: Clean screenshots and Create directory
+          command: |
+            rm -rf src/screenshots/*
+            mkdir -p workspace
+      - run:
+          name: Testing
+          command: mvn test && echo "export RESULTADO=success" >> $BASH_ENV || echo "export RESULTADO=failure" >> $BASH_ENV
+      - run:
+          name: Print result
+          command: echo "Test $RESULTADO"
+
+      - store_artifacts:
+          path: src/screenshots
+          destination: screenshots
+
+      - run:
+          name: Configure Git
+          command: |
+            git config credential.helper 'cache --timeout=120'
+            git config user.name "GUPILUAN"
+            git config user.email "gupiluan@hotmail.com"
+
+      - run:
+          name: Verify changes
+          command: |
+            if [ -d "src/screenshots" ]; then
+              git add src/screenshots
+              git commit -m "Test screenshots [skip ci]" || echo "No changes to commit"
+              git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            else
+              echo "No screenshots."
+            fi
+
+      - run: pwd
+      - run: ls -aR ~/
+      - persist_to_workspace:
+          root: .
+          paths:
+            - src/screenshots
+      - run:
+          name: Deploy if tests success
+          command: |
+            if [ "$RESULTADO" = "failure" ]; then
+              echo "ERROR."
+              exit 1
+            fi
+            echo "Tests passed. Deploying..."
+
+      - store_test_results:
+          path: target/surefire-reports
+      - save_cache:
+          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          paths:
+            - ~/.m2/repository
+
+  publish:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - run:
+          name: Clone repository
+          command: git clone https://github.com/GUPILUAN/screen-shots-results.github.io
+      - run:
+          name: Copy images and erase old images
+          command: |
+            ls -l ~/workspace
+            rm -rf /screen-shots-results.github.io/public/images/*
+            cp -r ~/workspace/* /screen-shots-results.github.io/public/images
+
+      - run:
+          name: Configure Git
+          command: |
+            git config credential.helper 'cache --timeout=120'
+            git config user.name "GUPILUAN"
+            git config user.email "gupiluan@hotmail.com"
+
+      - run:
+          name: Commit and push changes
+          command: |
+            git add .
+            git commit -m "New images"
+            git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/screen-shots-results.github.io main
+
+  deploy:
+    # This is an example deploy job, not actually used by the workflow
+    docker:
+      - image: cimg/base:stable
+    steps:
+      # Replace this with steps to deploy to users
+      - run:
+          name: deploy
+          command: echo "Aqui se haria el deploy una vez pase los tests"
+
+workflows:
+  build-and-test:
+    jobs:
+      - test-java
+      - publish:
+          requires:
+            - test-java
+      - deploy:
+          requires:
+            - test-java

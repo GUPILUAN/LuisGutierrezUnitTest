@@ -6,14 +6,14 @@ import java.util.*;
 import com.mayab.quality.unittest.config.OracleConnection;
 import com.mayab.quality.unittest.model.User;
 
-public class DAOUser implements IDAOUser {
+public class DAOOracleUser implements IDAOUser {
     private OracleConnection oracleConnection;
 
-    public DAOUser(OracleConnection oc) {
+    public DAOOracleUser(OracleConnection oc) {
         this.oracleConnection = oc;
     };
 
-    public DAOUser() {
+    public DAOOracleUser() {
         this.oracleConnection = new OracleConnection(new String[] {});
     }
 

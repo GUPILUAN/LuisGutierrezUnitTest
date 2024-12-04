@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.mayab.quality.unittest.dao.DAOUser;
 import com.mayab.quality.unittest.dao.IDAOUser;
 import com.mayab.quality.unittest.model.User;
 
@@ -31,7 +30,7 @@ public class UserServiceTest {
 
     @BeforeAll
     public static void setUp() {
-        daoUserMock = mock(DAOUser.class);
+        daoUserMock = mock(IDAOUser.class);
         // userMock = mock(User.class);
         userService = new UserService(daoUserMock);
         dataBase = new ArrayList<>();
@@ -243,6 +242,7 @@ public class UserServiceTest {
         String newUsername = "updated";
         User update = new User(user.getUsername(), user.getPassword(), user.getEmail());
         update.setId(user.getId());
+
         update.setUsername(newUsername);
 
         when(daoUserMock.updateUser(any(User.class))).thenAnswer(new Answer<User>() {
