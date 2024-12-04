@@ -52,14 +52,24 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y google-chrome-stable
       - run:
+          name: Clean screenshots
+          command: |
+            rm -rf src/screenshots/*
+      - run:
           name: Testing
           command: mvn test && echo "export RESULTADO=success" >> $BASH_ENV || echo "export RESULTADO=failure" >> $BASH_ENV
       - run:
           name: Print result
           command: echo "Test $RESULTADO"
+
       - store_artifacts:
           path: src/screenshots
           destination: screenshots
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - src/screenshots
 
       - run:
           name: Configure Git
@@ -75,15 +85,10 @@ jobs:
               git add src/screenshots
               git commit -m "Test screenshots [skip ci]" || echo "No changes to commit"
               git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
-              mkdir -p workspace-content
-              cp -r src/screenshots/* workspace-content/
             else
               echo "No screenshots."
             fi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - workspace-content
+
       - run:
           name: Deploy if tests success
           command: |
@@ -91,7 +96,7 @@ jobs:
               echo "ERROR."
               exit 1
             fi
-            echo "Deploying..."
+            echo "Tests passed. Deploying..."
 
       - store_test_results:
           path: target/surefire-reports
@@ -104,18 +109,22 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
+      - run:
+          name: Create dir
+          command: |
+            mkdir -p workspace
       - attach_workspace:
           at: /workspace
       - run:
           name: Clone repository
           command: git clone https://github.com/GUPILUAN/screen-shots-results.github.io
-
+      - run: ls -a
       - run:
           name: Copy images and erase old images
           command: |
-            ls -l /workspace/workspace-content
-            rm -rf /workspace/screen-shots-results.github.io/public/images/*
-            cp -r /workspace/workspace-content/* /workspace/screen-shots-results.github.io/public/images/
+            ls -l /workspace
+            rm -rf /screen-shots-results.github.io/public/images/*
+            cp -r /workspace/* /screen-shots-results.github.io/public/images/
 
       - run:
           name: Configure Git
