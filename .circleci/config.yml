@@ -85,8 +85,10 @@ jobs:
               echo "No screenshots."
             fi
 
+      - run: pwd
+      - run: ls -ar ~/
       - persist_to_workspace:
-          root: workspace
+          root: .
           paths:
             - src/screenshots
       - run:
@@ -110,7 +112,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - attach_workspace:
-          at: /home/circleci/project/workspace
+          at: ~/workspace
       - run:
           name: Clone repository
           command: git clone https://github.com/GUPILUAN/screen-shots-results.github.io
