@@ -52,7 +52,13 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y google-chrome-stable
       - run:
-          command: mvn test
+          command: mvn test && echo "export RESULTADO=success" >> $BASH_ENV || echo "export RESULTADO=failure" >> $BASH_ENV
+      - run:
+          name: Print result
+          command: echo "Test $RESULTADO"
+      - store_artifacts:
+          path: src/screenshots
+          destination: screenshots
 
       - run:
           name: Configure Git
@@ -60,12 +66,26 @@ jobs:
             git config credential.helper 'cache --timeout=120'
             git config user.name "GUPILUAN"
             git config user.email "gupiluan@hotmail.com"
+
       - run:
-          name: Commit and Push Changes
+          name: Verify changes
           command: |
-            git add .
-            git commit -m "Auto-commit from CircleCI [skip ci]" || echo "No changes to commit"
-            git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            if [ -d "src/screenshots" ]; then
+              git add src/screenshots
+              git commit -m "Test screenshots [skip ci]" || echo "No changes to commit"
+              git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
+            else
+              echo "No screenshots."
+            fi
+      - run:
+          name: Deploy if tests success
+          command: |
+            if [ "$RESULTADO" = "failure" ]; then
+              echo "ERROR."
+              exit 1
+            fi
+            echo "Deploying..."
+
       - store_test_results:
           path: target/surefire-reports
       - save_cache:
@@ -81,13 +101,12 @@ jobs:
       # Replace this with steps to deploy to users
       - run:
           name: deploy
-          command: "#e.g. ./deploy.sh"
+          command: echo "Aqui se haria el deploy una vez pase los tests"
 
 workflows:
   build-and-test:
     jobs:
       - test-java
-
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - deploy:
+          requires:
+            - test-java
