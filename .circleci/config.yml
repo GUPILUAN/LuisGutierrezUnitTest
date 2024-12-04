@@ -120,8 +120,8 @@ jobs:
           name: Copy images and erase old images
           command: |
             ls -l ~/workspace
-            rm -rf /screen-shots-results.github.io/public/images/*
-            cp -r ~/workspace/* /screen-shots-results.github.io/public/images
+            rm -rf screen-shots-results.github.io/public/images/*
+            cp -r ~/workspace/* screen-shots-results.github.io/public/images
 
       - run:
           name: Configure Git
