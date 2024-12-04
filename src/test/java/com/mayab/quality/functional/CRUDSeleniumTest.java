@@ -338,7 +338,7 @@ public class CRUDSeleniumTest {
 
                 File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
                 OutputStream outPath = new FileOutputStream(
-                                "src/screenshots/" + fileName + "_" + fechaFormateada + ".jpeg");
+                                "src/screenshots/" + fileName + "_" + fechaFormateada + ".png");
                 FileUtils.copyFile(file, outPath);
 
         }
