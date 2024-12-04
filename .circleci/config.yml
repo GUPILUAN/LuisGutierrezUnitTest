@@ -51,11 +51,20 @@ jobs:
             echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
             sudo apt-get update
             sudo apt-get install -y google-chrome-stable
+
+      - run:
+          name: Configure Git
+          command: |
+            git pull origin circleci-project-setup
+            git config credential.helper 'cache --timeout=120'
+            git config user.name "GUPILUAN"
+            git config user.email "gupiluan@hotmail.com"
       - run:
           name: Clean screenshots and Create directory
           command: |
             rm -rf src/screenshots/*
             mkdir -p workspace
+
       - run:
           name: Testing
           command: mvn test && echo "export RESULTADO=success" >> $BASH_ENV || echo "export RESULTADO=failure" >> $BASH_ENV
@@ -68,17 +77,9 @@ jobs:
           destination: screenshots
 
       - run:
-          name: Configure Git
-          command: |
-            git config credential.helper 'cache --timeout=120'
-            git config user.name "GUPILUAN"
-            git config user.email "gupiluan@hotmail.com"
-
-      - run:
           name: Verify changes
           command: |
             if [ -d "src/screenshots" ]; then
-              git pull origin circleci-project-setup
               git add src/screenshots
               git commit -m "Test screenshots [skip ci]" || echo "No changes to commit"
               git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
