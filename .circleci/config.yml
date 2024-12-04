@@ -116,7 +116,6 @@ jobs:
       - run:
           name: Clone repository
           command: git clone https://github.com/GUPILUAN/screen-shots-results.github.io
-      - run: ls -aR
       - run:
           name: Copy images and erase old images
           command: |
