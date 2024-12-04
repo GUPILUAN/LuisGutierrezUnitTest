@@ -333,7 +333,7 @@ public class CRUDSeleniumTest {
 
         public void takeScreenShot(String fileName) throws IOException {
                 LocalDateTime fechaHoraActual = LocalDateTime.now();
-                DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 String fechaFormateada = fechaHoraActual.format(formato);
 
                 File file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
