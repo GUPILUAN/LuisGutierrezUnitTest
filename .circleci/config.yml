@@ -78,6 +78,7 @@ jobs:
           name: Verify changes
           command: |
             if [ -d "src/screenshots" ]; then
+              git pull origin circleci-project-setup
               git add src/screenshots
               git commit -m "Test screenshots [skip ci]" || echo "No changes to commit"
               git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
