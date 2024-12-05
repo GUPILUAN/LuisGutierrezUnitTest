@@ -14,7 +14,6 @@ class App {
         // User userPrueba = new User("username", "password", "email@email.com");
         // daoUser.save(userPrueba);
         System.out.println(daoUser.findAll());
-        // Hola
 
     }
 }
