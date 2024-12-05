@@ -56,11 +56,21 @@ jobs:
             mkdir -p workspace
 
       - run:
-          name: Testing
-          command: mvn test && echo "export RESULTADO=success" >> $BASH_ENV || echo "export RESULTADO=failure" >> $BASH_ENV
+          name: Unit Testing
+          command: mvn -Dtest=com.mayab.quality.unittest.* && echo "export RESULTADO1=success" >> $BASH_ENV || echo "export RESULTADO1=failure" >> $BASH_ENV
       - run:
-          name: Print result
-          command: echo "Test $RESULTADO"
+          name: Integration Testing
+          command: mvn -Dtest=com.mayab.quality.integration.* && echo "export RESULTADO2=success" >> $BASH_ENV || echo "export RESULTADO2=failure" >> $BASH_ENV
+      - run:
+          name: Functional Testing
+          command: mvn -Dtest=com.mayab.quality.functional.* && echo "export RESULTADO3=success" >> $BASH_ENV || echo "export RESULTADO3=failure" >> $BASH_ENV
+
+      - run:
+          name: Print results
+          command: |
+            echo "Test Unit  $RESULTADO1"
+            echo "Test Integration $RESULTADO2"
+            echo "Test Functional $RESULTADO3"
 
       - store_artifacts:
           path: src/screenshots
@@ -86,11 +96,11 @@ jobs:
       - run:
           name: Deploy if tests success
           command: |
-            if [ "$RESULTADO" = "failure" ]; then
-              echo "ERROR."
-              exit 1
+            if [ "$RESULTADO1" = "failure" ] || [ "$RESULTADO2" = "failure" ] || [ "$RESULTADO3" = "failure" ]; then
+            echo "ERROR. One or more tests failed."
+            exit 1
             fi
-            echo "Tests passed. Deploying..."
+            echo "All tests passed. Deploying..."
 
       - store_test_results:
           path: target/surefire-reports
@@ -146,3 +156,7 @@ workflows:
       - deploy:
           requires:
             - test-java
+          filters:
+            branches:
+              only:
+                - main
