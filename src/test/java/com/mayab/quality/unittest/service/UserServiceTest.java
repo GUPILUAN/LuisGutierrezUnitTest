@@ -73,7 +73,19 @@ public class UserServiceTest {
     // When the user is created (HAPPY PATH)
     @Test
     public void creatingUser() {
+        when(daoUserMock.findUserByEmail(anyString())).thenAnswer(new Answer<User>() {
+            public User answer(InvocationOnMock invocation) throws Throwable {
 
+                for (User userIn : dataBase) {
+                    if (userIn.getEmail().equals(invocation.getArguments()[0])) {
+                        System.out.println("Tienen el mismo email");
+                        return userIn;
+                    }
+                }
+
+                return null;
+            }
+        });
         User userCreated = userService.createUser("newuser@email.com", "newUser", "123456789");
         if (userCreated != null) {
             System.out.println("ID: " + userCreated.getId() + " Username: " + userCreated.getUsername());
@@ -239,11 +251,11 @@ public class UserServiceTest {
     @Test
     public void updateUser() {
         User user = dataBase.get(0);
-        String newUsername = "updated";
+        String newUsernamePassword = "updated";
         User update = new User(user.getUsername(), user.getPassword(), user.getEmail());
         update.setId(user.getId());
 
-        update.setUsername(newUsername);
+        update.setPassword(newUsernamePassword);
 
         when(daoUserMock.updateUser(any(User.class))).thenAnswer(new Answer<User>() {
             public User answer(InvocationOnMock invocation) throws Throwable {
@@ -262,7 +274,7 @@ public class UserServiceTest {
         User updatedUser = userService.updateUser(update);
         if (updatedUser != null) {
             System.out.println("DATABASE AFTER CHANGES:\n " + dataBase);
-            assertEquals(updatedUser.getUsername(), newUsername);
+            assertEquals(updatedUser.getPassword(), newUsernamePassword);
         } else {
             assertNull(updatedUser);
         }
@@ -277,6 +289,7 @@ public class UserServiceTest {
      */
     @Test
     public void deleteUser() {
+        int databaseLengthBefore = dataBase.size();
         when(daoUserMock.deleteById(anyInt())).thenAnswer(new Answer<Boolean>() {
             public Boolean answer(InvocationOnMock invocation) throws Throwable {
                 Integer userId = (int) invocation.getArguments()[0];
@@ -293,6 +306,8 @@ public class UserServiceTest {
 
         boolean result = userService.deleteUser(1);
         System.out.println("DATABASE AFTER CHANGES:\n " + dataBase);
+        int databaseLengthAfter = dataBase.size();
+        assertEquals(databaseLengthBefore - 1, databaseLengthAfter);
         assertTrue(result);
     }
 
