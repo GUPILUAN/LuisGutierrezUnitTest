@@ -5,7 +5,7 @@ version: 2.1
 jobs:
   test-java:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:17.0-browsers
       - image: cimg/mysql:8.0
         environment:
           MYSQL_ROOT_PASSWORD: 123456
@@ -41,16 +41,6 @@ jobs:
                     sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
       - restore_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-
-      - run:
-          name: Installing dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y wget gnupg
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
 
       - run:
           name: Configure Git
