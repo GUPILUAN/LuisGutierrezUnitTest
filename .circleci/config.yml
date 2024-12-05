@@ -57,13 +57,13 @@ jobs:
 
       - run:
           name: Unit Testing
-          command: mvn -Dtest=com.mayab.quality.unittest.* && echo "export RESULTADO1=success" >> $BASH_ENV || echo "export RESULTADO1=failure" >> $BASH_ENV
+          command: mvn -Dtest=com.mayab.quality.unittest.* test && echo "export RESULTADO1=success" >> $BASH_ENV || echo "export RESULTADO1=failure" >> $BASH_ENV
       - run:
           name: Integration Testing
-          command: mvn -Dtest=com.mayab.quality.integration.* && echo "export RESULTADO2=success" >> $BASH_ENV || echo "export RESULTADO2=failure" >> $BASH_ENV
+          command: mvn -Dtest=com.mayab.quality.integration.* test && echo "export RESULTADO2=success" >> $BASH_ENV || echo "export RESULTADO2=failure" >> $BASH_ENV
       - run:
           name: Functional Testing
-          command: mvn -Dtest=com.mayab.quality.functional.* && echo "export RESULTADO3=success" >> $BASH_ENV || echo "export RESULTADO3=failure" >> $BASH_ENV
+          command: mvn -Dtest=com.mayab.quality.functional.* test && echo "export RESULTADO3=success" >> $BASH_ENV || echo "export RESULTADO3=failure" >> $BASH_ENV
 
       - run:
           name: Print results
