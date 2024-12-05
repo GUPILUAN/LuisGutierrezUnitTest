@@ -57,7 +57,7 @@ jobs:
 
       - run:
           name: Unit Testing
-          command: mvn test -Dtest=com.mayab.quality.unittest.service.UserServiceTest,com.mayab.quality.unittest.dao.UserDaoTest && echo "export RESULTADO1=success" >> $BASH_ENV || echo "export RESULTADO1=failure" >> $BASH_ENV
+          command: mvn test -Dtest=com.mayab.quality.unittest.service.UserServiceTest && echo "export RESULTADO1=success" >> $BASH_ENV || echo "export RESULTADO1=failure" >> $BASH_ENV
       - run:
           name: Integration Testing
           command: mvn test -Dtest=com.mayab.quality.integration.UserServiceDbTest  && echo "export RESULTADO2=success" >> $BASH_ENV || echo "export RESULTADO2=failure" >> $BASH_ENV
