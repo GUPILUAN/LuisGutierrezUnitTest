@@ -79,7 +79,7 @@ jobs:
       - run:
           name: Verify changes
           command: |
-            if [ -d "src/screenshots" ]; then
+            if [ -d "src/screenshots" ] && [$CIRCLE_BRANCH != main ]; then
               git add src/screenshots
               git commit -m "Test screenshots [skip ci]" || echo "No changes to commit"
               git push -q https://GUPILUAN:$GH_TOKEN@github.com/GUPILUAN/LuisGutierrezUnitTest.git $CIRCLE_BRANCH
@@ -104,6 +104,7 @@ jobs:
 
       - store_test_results:
           path: target/surefire-reports
+
       - save_cache:
           key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
           paths:
