@@ -2,6 +2,8 @@
 
 ## Screenshots final project
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/MS5R1zGgYLQr9GTD37FAR6/52cpbPAJBdDCyS7ZtuRyVB/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/MS5R1zGgYLQr9GTD37FAR6/52cpbPAJBdDCyS7ZtuRyVB/tree/main)
+
 - [Link a la página web](https://gupiluan.github.io/screen-shots-results.github.io/)
 - [Link a la sección](https://github.com/GUPILUAN/LuisGutierrezUnitTest/tree/circleci-project-setup/src/screenshots)
 
