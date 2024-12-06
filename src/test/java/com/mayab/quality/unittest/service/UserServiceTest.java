@@ -91,7 +91,7 @@ public class UserServiceTest {
             System.out.println("ID: " + userCreated.getId() + " Username: " + userCreated.getUsername());
 
         }
-        assertNull(userCreated); // Fix
+        assertNotNull(userCreated); // Fix
 
     }
 
